@@ -5,6 +5,10 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
+import de.m2x4m4l42n.lom2x4.graphics.Shader;
+import de.m2x4m4l42n.lom2x4.map.Map;
+import de.m2x4m4l42n.lom2x4.math.Matrix4f;
+
 import java.nio.*;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -20,6 +24,8 @@ public class Main {
 	
 	private int width = 1024;
 	private int height = width/16*9;
+	
+	private Map map; 
 	
 	public void run() {
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -56,10 +62,7 @@ public class Main {
 			throw new RuntimeException("Failed to create the GLFW window");
 
 		// Setup a key callback. It will be called every time a key is pressed, repeated or released.
-		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-			if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
-				glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
-		});
+		glfwSetKeyCallback(window, new Input());
 
 		// Get the thread stack and push a new frame
 		try ( MemoryStack stack = stackPush() ) {
@@ -87,6 +90,17 @@ public class Main {
 
 		// Make the window visible
 		glfwShowWindow(window);
+		
+		GL.createCapabilities();
+		//Load All Shaders
+		Shader.loadAll();
+		
+		Matrix4f mat_pr = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f /16.0f, 10.0f * 9.0f /16.0f, -1.0f, 1.0f);
+		Shader.background.bind();
+		Shader.background.setUniformMat4f("mat_pr", mat_pr);
+		
+		map = new Map();
+		
 	}
 
 	private void loop() {
@@ -97,22 +111,26 @@ public class Main {
 		// bindings available for use.
 		GL.createCapabilities();
 
-		// Set the clear color
-		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
-
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
 		while ( !glfwWindowShouldClose(window) ) {
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-			glfwSwapBuffers(window); // swap the color buffers
-
-			// Poll for window events. The key callback above will only be
-			// invoked during this call.
-			glfwPollEvents();
+			update();
+			render();
+		
 		}
 	}
+	private void update() {
+		glfwPollEvents();
+		if(Input.keys[GLFW_KEY_SPACE])
+			System.out.println("Flap!");
+	}
+	private void render() {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		map.render();
+		glfwSwapBuffers(window);
 
+	}
 	public static void main(String[] args) {
 		new Main().run();
 	}
