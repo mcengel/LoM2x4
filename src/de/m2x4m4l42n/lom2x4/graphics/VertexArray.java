@@ -25,7 +25,7 @@ public class VertexArray {
 		tbo = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, tbo);
 		glBufferData(GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(texCoord), GL_STATIC_DRAW);
-		glVertexAttribPointer(Shader.TEXCOORD_ATTRIB, 3, GL_FLOAT, false, 0, 0);
+		glVertexAttribPointer(Shader.TEXCOORD_ATTRIB, 2, GL_FLOAT, false, 0, 0);
 		glEnableVertexAttribArray(Shader.TEXCOORD_ATTRIB);
 		
 		ibo = glGenBuffers();

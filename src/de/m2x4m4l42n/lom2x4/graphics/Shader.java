@@ -1,9 +1,12 @@
 package de.m2x4m4l42n.lom2x4.graphics;
 
-import de.m2x4m4l42n.lom2x4.math.*;
+import org.joml.*;
+import org.lwjgl.BufferUtils;
+
 import de.m2x4m4l42n.lom2x4.utils.ShaderUtils;
 import static org.lwjgl.opengl.GL20.*;
 
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +16,7 @@ public class Shader {
 	public static final int TEXCOORD_ATTRIB = 1;
 	
 	public static Shader background;
+	public static Shader player;
 	
 	private final int ID;
 	private Map<String, Integer> locationCache = new HashMap<String,Integer>();
@@ -20,6 +24,7 @@ public class Shader {
 	
 	public static void loadAll() {
 		background = new Shader("shaders/background.vert","shaders/background.frag");
+		player = new Shader("shaders/player.vert","shaders/player.frag");
 		
 	}
 	
@@ -51,7 +56,9 @@ public class Shader {
 		glUniform3f(getUniform(name), vec.x,vec.y,vec.z);
 	}
 	public void setUniformMat4f(String name, Matrix4f mat) {
-		glUniformMatrix4fv(getUniform(name),false, mat.toFloatBuffer());
+		FloatBuffer fb =BufferUtils.createFloatBuffer(16);
+		mat.get(fb);
+		glUniformMatrix4fv(getUniform(name),false,fb );
 		
 	}
 	
@@ -64,5 +71,10 @@ public class Shader {
 	}
 	public void render() {
 		
+	}
+
+	public void setUniform2i(String name, Vector2i vec) {
+		// TODO Auto-generated method stub
+		glUniform2i(getUniform(name), vec.x,vec.y);
 	}
 }

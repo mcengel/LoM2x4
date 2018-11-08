@@ -4,11 +4,13 @@ import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+
 import javax.imageio.ImageIO;
 
 import de.m2x4m4l42n.lom2x4.utils.BufferUtils;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL13.*;
+
 public class Texture {
 	private int width,height;
 	private int texture;
@@ -24,6 +26,7 @@ public class Texture {
 			image = ImageIO.read(new FileInputStream(path));
 			width = image.getWidth();
 			height = image.getHeight();
+			System.out.println("Width "+width + "  Height "+ height);
 			pixels = new int[width*height];
 			image.getRGB(0, 0,width,height,pixels,0,width);
 			
@@ -40,12 +43,12 @@ public class Texture {
 			
 			data[i] = a << 24 | b << 16 | g << 8 | r;
 		}
-		
+		glActiveTexture(GL_TEXTURE0);
 		int result = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, result);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE, BufferUtils.createIntBuffer(data));
+		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE, BufferUtils.createIntBuffer(data));
 		glBindTexture(GL_TEXTURE_2D, 0);
 		
 		return result;
@@ -56,5 +59,11 @@ public class Texture {
 	}
 	public void unbind() {
 		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	public int getWidth() {
+		return width;
+	}
+	public int getHeight() {
+		return height;
 	}
 }

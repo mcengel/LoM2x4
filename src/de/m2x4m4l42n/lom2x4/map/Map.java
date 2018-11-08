@@ -11,8 +11,8 @@ public class Map {
 		float[] verticies = new float[] {
 				-10.0f, -10.0f * 9.0f /16.0f, 0.0f,
 				-10.0f,  10.0f * 9.0f /16.0f, 0.0f,
-				  0.0f,  10.0f * 9.0f /16.0f, 0.0f,
-				  0.0f, -10.0f * 9.0f /16.0f, 0.0f
+				 10.0f,  10.0f * 9.0f /16.0f, 0.0f,
+				 10.0f, -10.0f * 9.0f /16.0f, 0.0f
 				
 		};
 		byte[] indicies = new byte[] {
