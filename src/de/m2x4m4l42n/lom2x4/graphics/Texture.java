@@ -43,7 +43,6 @@ public class Texture {
 			
 			data[i] = a << 24 | b << 16 | g << 8 | r;
 		}
-		glActiveTexture(GL_TEXTURE0);
 		int result = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, result);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

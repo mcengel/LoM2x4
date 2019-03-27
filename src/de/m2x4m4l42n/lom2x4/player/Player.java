@@ -82,8 +82,12 @@ public class Player {
 		Shader.player.bind();
 		texture.bind();
 		vao.render();
+		texture.unbind();
 		Shader.player.unbind();
 		
 
+	}
+	public Vector3f getPosition() {
+		return position;
 	}
 }

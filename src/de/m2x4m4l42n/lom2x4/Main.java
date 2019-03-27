@@ -5,6 +5,7 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import de.m2x4m4l42n.lom2x4.graphics.Shader;
 import de.m2x4m4l42n.lom2x4.map.Map;
@@ -63,7 +64,7 @@ public class Main {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
 		// Create the window
-		window = glfwCreateWindow(width, height, "Hello World!", NULL, NULL);
+		window = glfwCreateWindow(width, height, Game.TITLE, NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 
@@ -100,20 +101,22 @@ public class Main {
 		GL.createCapabilities();
 		//Load All Shaders
 		Shader.loadAll();
-		
+		glActiveTexture(GL_TEXTURE0);
 		map = new Map();
+		glActiveTexture(GL_TEXTURE1);
 		player = new Player();
 		
-		mat_pr = new Matrix4f().setOrtho(-10.0f, 10.0f, -10.0f * 9.0f /16.0f, 10.0f * 9.0f /16.0f, -1.0f, 1.0f);
+		mat_pr = new Matrix4f().setOrtho(-15.0f, 15.0f, -15.0f * 9.0f /16.0f, 15.0f * 9.0f /16.0f, -1.0f, 1.0f);
 		mat_vw = new Matrix4f().identity();
 		
 		Shader.background.bind();
 		Shader.background.setUniformMat4f("mat_pr", mat_pr.mul(mat_vw));
+		Shader.background.setUniform1i("u_Texture", 0);
 		Shader.background.unbind();
 		Shader.player.bind();
 		Shader.player.setUniformMat4f("mat_vw", mat_vw);
 		Shader.player.setUniformMat4f("mat_pr", mat_pr);
-		Shader.player.setUniform1i("u_Texture", 0);
+		Shader.player.setUniform1i("u_Texture", 1);
 		Shader.player.unbind();
 		
 		
@@ -157,14 +160,15 @@ public class Main {
 	}
 	private void update() {
 		glfwPollEvents();
-		
+
 		player.update();
 		
 	}
 	private void render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE0);
 		map.render();
-		Shader.player.bind();
+		glActiveTexture(GL_TEXTURE1);
 		player.render();
 		glfwSwapBuffers(window);
 
